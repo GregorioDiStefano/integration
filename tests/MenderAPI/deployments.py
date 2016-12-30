@@ -33,8 +33,8 @@ class Deployments(object):
 
     def upload_image(self, name, filename, description="abc"):
         image_path_url = self.deployments_base_path + "artifacts"
-
-        r = self.s.post(image_path_url, files=(("name", (None, name)),
+        print image_path_url, name, description, filename
+        r = self.s.post(image_path_url, verify=False, files=(("name", (None, name)),
                           ("description", (None, description)),
                           ("artifact", (filename, open(filename),
                            "multipart/form-data"))))

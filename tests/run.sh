@@ -29,7 +29,7 @@ if [[ ! -f mender-artifact ]]; then
     if [ -f /mnt/build/tmp/sysroots/x86_64-linux/usr/bin/mender-artifact ]; then
         cp /mnt/build/tmp/sysroots/x86_64-linux/usr/bin/mender-artifact .
     else
-        curl "https://d25phv8h0wbwru.cloudfront.net/master/tip/mender-artifact" -o mender-artifact
+        curl "https://s3-eu-west-1.amazonaws.com/mender-artifacts/master/tip/mender-artifact" -o mender-artifact
     fi
     chmod +x mender-artifact
 fi
