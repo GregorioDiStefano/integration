@@ -7,6 +7,7 @@ import os
 import random
 import time
 import inspect
+import subprocess
 
 # strings
 import argparse
@@ -131,10 +132,10 @@ class TestUI(object):
         return self.wait_for_element(driver, By.XPATH, xp, timeout)
 
     def upload_artifacts(self, driver):
-        self.upload_artifact(driver, "/tmp/vexpress_release_1.mender")
-        self.upload_artifact(driver, "/tmp/vexpress_release_2.mender")
-        time.sleep(10)
-        artifacts = []
+        self.upload_artifact(driver, "vexpress_release_1.mender")
+        self.upload_artifact(driver, "vexpress_release_2.mender")
+        time.sleep(60)
+
         xpaths = ["//table/tbody[@class='clickable']/tr[1]/td[1]",
                   "//table/tbody[@class='clickable']/tr[2]/td[1]"]
         # NOTE: These xpaths match the first clickable table
@@ -190,6 +191,7 @@ class TestUI(object):
             self.destroy_driver(driver)
 
     def test_artifact_upload(self):
+        self.create_artifacts()
         ui_test_banner()
 
         try:
@@ -303,7 +305,7 @@ class TestUI(object):
         self.login(driver)
         assert self.click_button(driver, "Deployments")
 
-        timeout = time.time() + 60*5
+        timeout = time.time() + 60*10
         while time.time() < timeout:
                 e = self.wait_for_element(driver, By.CSS_SELECTOR, "span.status.success")
                 if e.text == '1':
@@ -315,6 +317,12 @@ class TestUI(object):
         ui_test_success()
         self.destroy_driver(driver)
 
+    def create_artifacts(self):
+        subprocess.call("mender-artifact write rootfs-image -u core-image-full-cmdline-vexpress-qemu.ext4 -t vexpress-qemu -n release-1 -o vexpress_release_1.mender", shell=True)
+        subprocess.call("mender-artifact write rootfs-image -u core-image-full-cmdline-vexpress-qemu.ext4 -t vexpress-qemu -n release-2 -o vexpress_release_2.mender", shell=True)
+
+
+
 def get_args():
     argparser = argparse.ArgumentParser(description='Test UI of mender web server')
     argparser.add_argument('--url', '-u', help='URL (default="https://localhost:8080/")', type=str, default='https://localhost:8080/')
@@ -325,6 +333,7 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
     test = TestUI()
+    test.create_artifacts()
     test.test_login_create_user()
     test.test_click_header_buttons()
     test.test_artifact_upload()
