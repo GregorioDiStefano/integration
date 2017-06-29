@@ -32,6 +32,7 @@ import socket
 
 class TestSecurity(MenderTesting):
 
+    @pytest.mark.skip
     @pytest.mark.usefixtures("standard_setup_without_client")
     def test_ssl_only(self):
         """ make sure we are not exposing any non-ssl connections"""
