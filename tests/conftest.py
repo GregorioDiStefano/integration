@@ -32,6 +32,7 @@ logging.getLogger("paramiko").setLevel(logging.CRITICAL)
 logging.getLogger("urllib3").setLevel(logging.CRITICAL)
 logging.getLogger("filelock").setLevel(logging.INFO)
 
+log.setup_custom_logger("root", "")
 docker_compose_instance = "mender" + str(random.randint(0, 9999999))
 
 docker_lock = filelock.FileLock("docker_lock")
